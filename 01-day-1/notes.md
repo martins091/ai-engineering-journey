@@ -1,297 +1,92 @@
-# AI Engineering Journey - Notes
+# Day 1 — OpenAI Basics 🚀
 
-## Day 1 - OpenAI Basics
+**AI Engineering Journey**
 
-### What I Learned
+## 📌 Overview
 
-* How to install and use `python-dotenv`
-* How to store API keys securely in a `.env` file
-* How to load environment variables using:
-
-  ```python
-  from dotenv import load_dotenv
-  load_dotenv()
-  ```
-* How to access environment variables:
-
-  ```python
-  os.getenv("OPENAI_API_KEY")
-  ```
+Today I learned the fundamentals of working with AI using APIs and how AI applications are structured.
 
 ---
 
-### OpenAI API Setup
+## 🧠 Core Understanding
 
-* Create client:
-
-  ```python
-  from openai import OpenAI
-  client = OpenAI(api_key=api_key)
-  ```
-
-* Basic request:
-
-  ```python
-  response = client.chat.completions.create(
-      model="gpt-4o-mini",
-      messages=[
-          {"role": "user", "content": "Your question"}
-      ]
-  )
-  ```
+* AI apps follow a simple flow: **Input → API → Response**
+* AI is not magic — it’s controlled by prompts, parameters, and data
+* You can simulate AI logic even without an API
 
 ---
 
-### Errors I Encountered
+## 🔑 Key Concepts
 
-* `insufficient_quota` (Error 429)
+### API & Security
 
-#### Meaning:
-
-* No billing / no credits
-
-#### Solution:
-
-* Add billing OR use fallback (mock response)
-
----
-
-### Fallback Strategy (Important)
-
-* If API fails, return a manual response
-
-Example:
-
-```python
-try:
-    # API call
-except:
-    print("Fallback response")
-```
-
----
-
-### Key Lessons
-
-* API is not free (pay-as-you-go)
-* Always handle errors in production code
+* OpenAI API is **pay-as-you-go**
 * Never expose API keys in code
-* Use `.env` for security
+* Use `.env` files for security
+* Always handle errors in production
 
 ---
 
-### My Understanding
+### Tokens & Cost
 
-* AI apps = Input → API → Response
-* I can simulate AI without API for now
+* Tokens = pieces of text (input + output)
+* Cost depends on total tokens used
 
----
+**Formula:**
+Cost = (Input Tokens × Price) + (Output Tokens × Price)
 
-### Next Step
-
-* Continue course
-* Practice without API
-* Learn prompt structure
-
-
-
-
-
-
-## Tokens and Cost in AI
-
-Tokens:
-
-* Tokens are pieces of text (words or parts of words)
-* Both input (prompt) and output (response) use tokens
-
-Max Completion Tokens:
-
-* max_completion_tokens sets the maximum number of tokens the AI can generate
-* It is a limit, not a fixed number
-
-Temperature:
-
-* Temperature controls how creative or random the AI response is
-
-Low Temperature (0.0 – 0.3):
-
-* More accurate and predictable
-* Best for coding, math, and factual answers
-
-High Temperature (0.7 – 1.0):
-
-* More creative and diverse
-* Best for writing, ideas, and storytelling
-
-Important:
-
-* Temperature affects style, not length
-* max_completion_tokens affects length, not creativity
-
-Cost:
-
-* Cost is based on both input and output tokens
-
-Formula:
-Total Cost = (Input Tokens × Input Price) + (Output Tokens × Output Price)
-
-Tracking Usage:
-Use:
-response.usage.prompt_tokens
-response.usage.completion_tokens
-
-This returns:
-
-* prompt_tokens
-* completion_tokens
-* total_tokens
-
-Key Idea:
-
-* Always monitor tokens to control cost in real applications
-
-## Mini Project: AI Cost Tracker with Temperature
-
-This project sends a prompt to an AI model, controls creativity, and calculates cost.
-
-Example Code:
-
-from openai import OpenAI
-
-client = OpenAI(api_key="YOUR_API_KEY")
-
-prompt = "Explain what a plane is in a simple way"
-
-max_completion_tokens = 100
-
-response = client.chat.completions.create(
-model="gpt-4o-mini",
-messages=[{"role": "user", "content": prompt}],
-temperature=0.7,
-max_completion_tokens=max_completion_tokens
-)
-
-output_text = response.choices[0].message.content
-print("AI Response:\n", output_text)
-
-# Pricing
-
-input_token_price = 0.15 / 1_000_000
-output_token_price = 0.60 / 1_000_000
-
-# Token usage
-
-input_tokens = response.usage.prompt_tokens
-output_tokens = response.usage.completion_tokens
-
-# Cost calculation
-
-cost = (input_tokens * input_token_price) + (output_tokens * output_token_price)
-
-print("\nToken Usage:")
-print(f"Input tokens: {input_tokens}")
-print(f"Output tokens: {output_tokens}")
-
-print(f"\nEstimated cost: ${cost:.10f}")
-
-Lesson:
-
-* Temperature controls creativity
-* max_completion_tokens controls length
-* Tokens determine cost
-* Always track usage in real-world AI systems
-
-
-
-
-## Prompting Techniques (Structured Examples)
-
-Prompting techniques help guide how the AI responds by providing examples.
+* Always track token usage in real applications
 
 ---
 
-### Zero-shot Prompting
+### Model Controls
 
-* No examples provided
+* **Temperature** → controls creativity
 
-Example:
-"Classify sentiment as 1–5 (negative to positive):
+  * Low = accurate
+  * High = creative
 
-This product is amazing!"
+* **max_completion_tokens** → controls response length
 
-Output:
-5
-
-Use when:
-
-* Task is simple and clear
+> Key idea: *Creativity ≠ Length*
 
 ---
 
-### One-shot Prompting
+## 🧩 Prompting Techniques
 
-* One example provided
+* **Zero-shot** → no examples
+* **One-shot** → one example
+* **Few-shot** → multiple examples
 
-Example:
-"Classify sentiment as 1–5 (negative to positive):
-
-Terrible product = 1
-
-This product is amazing ="
-
-Output:
-5
-
-Use when:
-
-* You want to guide the format or scale
+📌 Lesson:
+The AI learns from patterns you provide — like teaching a student.
 
 ---
 
-### Few-shot Prompting
+## 🛠️ What I Built
 
-* Multiple examples provided
-
-Example:
-"Classify sentiment as 1–5 (negative to positive):
-
-Love these! = 5
-Horrible experience = 1
-It's okay, not great = 3
-
-Unbelievably good! =
-Shoes fell apart on second use =
-The shoes look nice, but aren't comfortable =
-Can't wait to show them off! ="
-
-Expected Output:
-5
-1
-3
-5
-
-Use when:
-
-* Task needs consistency
-* You want better accuracy
+* AI response generator with fallback (no API key)
+* Cost tracker using token usage
+* Sentiment classifier (zero, one, few-shot)
+* Study planning assistant using system prompts
+* Guardrails to control AI responses
+* Multi-turn conversation handling (chat memory)
 
 ---
 
-### Key Idea
+## 💡 Key Takeaways
 
-* The model learns from the pattern you show
-* More examples = better guidance
-* More examples = more tokens = higher cost
+* AI = prompts + parameters + tokens
+* Good prompts = better results
+* Always control cost and usage
+* Structure matters when guiding AI
 
 ---
 
-### Summary
+## 🚀 Next Step
 
-* Zero-shot = no example
-* One-shot = one example
-* Few-shot = multiple examples
+* Dive deeper into prompting
+* Start working with real models
+* Build more practical AI tools
 
-Lesson:
-
-* Structure your prompt like teaching a student with examples
+**Day 2 → Prompt Engineering 🧠**

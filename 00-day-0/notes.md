@@ -13,6 +13,5 @@
 * Share my progress publicly to stay accountable and track growth
 
 ## Key Insight
-
 Consistency matters more than perfection.
 Small daily progress will compound into real skill over time.
