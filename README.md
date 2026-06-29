@@ -3,13 +3,6 @@
 This repository documents my journey to becoming an AI Engineer over a 90-day period.
 It contains my daily learning progress, code implementations, and projects.
 
-## Start Date
-
-Day 0 – Research Phase
-
-## Goal
-
-To become proficient and job-ready in AI Engineering by building practical skills through consistent daily learning and hands-on projects.
 
 ## Approach
 
