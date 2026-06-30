@@ -14,7 +14,6 @@ if not api_key:
 else:
     try:
         client = OpenAI(api_key=api_key)
-
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
