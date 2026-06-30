@@ -38,7 +38,8 @@ for page in reader.pages:
 print(document_text)
 
 
-########################################################################################################## Load the question-answering pipeline
+###################################################################################################
+#  Load the question-answering pipeline
 qa_pipeline = pipeline(task="question-answering", model="distilbert-base-cased-distilled-squad")
 
 question = "What is the notice period for resignation?"
