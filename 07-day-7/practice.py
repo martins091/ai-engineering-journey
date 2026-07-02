@@ -86,3 +86,71 @@ if num_tokens <= 100:
     print(response.choices[0].message.content)
 else:
     print("Message exceeds token limit")
+
+
+
+    #############################################################################################################
+from tenacity import retry, wait_random_exponential, stop_after_attempt
+from openai import OpenAI
+
+client = OpenAI(api_key="YOUR_API_KEY")
+
+@retry(wait=wait_random_exponential(min=5, max=40), stop=stop_after_attempt(4))
+def ask_robot():
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": "Tell me a joke"}]
+    )
+    return response.choices[0].message.content
+
+print(ask_robot())
+
+
+##############################################################################################################
+from openai import OpenAI
+
+client = OpenAI(api_key="YOUR_API_KEY")
+
+measurements = [5, 10, 15]
+
+messages = []
+
+# Instruction
+messages.append({
+    "role": "system",
+    "content": "Convert these kilometers to miles and show in a table."
+})
+
+# Add all values
+for i in measurements:
+    messages.append({"role": "user", "content": str(i)})
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=messages
+)
+
+print(response.choices[0].message.content)
+
+
+#############################################################################################################
+import tiktoken
+from openai import OpenAI
+
+client = OpenAI(api_key="YOUR_API_KEY")
+
+message = {"role": "user", "content": "Tell me about space"}
+
+# Count tokens
+encoding = tiktoken.encoding_for_model("gpt-4o-mini")
+tokens = len(encoding.encode(message["content"]))
+
+# Only send if small enough
+if tokens <= 100:
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[message]
+    )
+    print(response.choices[0].message.content)
+else:
+    print("Too long!")
