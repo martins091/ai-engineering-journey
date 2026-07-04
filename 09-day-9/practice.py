@@ -20,40 +20,53 @@ print(response_dict)
 print(response_dict['data'][0]['embedding'])
 
 ###############################################################################################################
-# Extract a list of product short descriptions from products
-products = [
-    {"id": 1, "short_description": "This is a great product for your home."},
-    {"id": 2, "short_description": "An innovative gadget that makes life easier."},
-    {"id": 3, "short_description": "A stylish accessory for your wardrobe."}
+# Define a create_embeddings function
+short_description = "This is a great product for your home."
+list_of_descriptions = [
+    "This is a great product for your home.",
+    "An innovative gadget that makes life easier.",
+    "A stylish accessory for your wardrobe."
 ]
-product_descriptions = [product['short_description'] for product in products]
-
-# Create embeddings for each product description
-response = client.embeddings.create(
+def create_embeddings(texts):
+  response = client.embeddings.create(
     model="text-embedding-3-small",
-    input=product_descriptions
-)
-response_dict = response.model_dump()
+    input=texts
+  )
+  response_dict = response.model_dump()
+  
+  return [data['embedding'] for data in response_dict['data']]
 
-# Extract the embeddings from response_dict and store in products
-for i, product in enumerate(products):
-    product['embedding'] = response_dict['data'][i]['embedding']
-    
-print(products[0].items())
+# Embed short_description and print
+print(create_embeddings(short_description)[0])
+
+# Embed list_of_descriptions and print
+print(create_embeddings(list_of_descriptions))
 
 ################################################################################################################
-# Create reviews and embeddings lists using list comprehensions
-categories = [product['category'] for product in products]
-embeddings = [product['embedding'] for product in products]
+# Embed the search text
+products = [
+    {
+        "short_description": "This is a great product for your home.",
+        "embedding": create_embeddings("This is a great product for your home.")[0]
+    },
+    {
+        "short_description": "An innovative gadget that makes life easier.",
+        "embedding": create_embeddings("An innovative gadget that makes life easier.")[0]
+    },
+    {
+        "short_description": "A stylish accessory for your wardrobe.",
+        "embedding": create_embeddings("A stylish accessory for your wardrobe.")[0]
+    }
+]
+search_text = "soap"
+search_embedding = create_embeddings(search_text)[0]
 
-# Reduce the number of embeddings dimensions to two using t-SNE
-tsne = TSNE(n_components=2, perplexity=5)
-embeddings_2d = tsne.fit_transform(np.array(embeddings))
+distances = []
+for product in products:
+  # Compute the cosine distance for each product description
+  dist = distance.cosine(search_embedding, product['embedding'])
+  distances.append(dist)
 
-# Create a scatter plot from embeddings_2d
-plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1])
-
-for i, category in enumerate(categories):
-    plt.annotate(category, (embeddings_2d[i, 0], embeddings_2d[i, 1]))
-
-plt.show()
+# Find and print the most similar product short_description    
+min_dist_ind = np.argmin(distances)
+print(products[min_dist_ind]['short_description'])
