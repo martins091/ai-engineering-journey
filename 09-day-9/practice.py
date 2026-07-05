@@ -1,5 +1,7 @@
 ##############################################################################################################
 # Create an OpenAI client
+from turtle import distance
+
 from openai import OpenAI
 
 
