@@ -280,6 +280,8 @@ Update	collection.update(ids, documents)	Update existing docs
 Upsert	collection.upsert(ids, documents)	Update or insert
 Delete	collection.delete(ids)	Remove documents
 Reset	client.reset()	⚠️ Delete EVERYTHING
+
+
 11. Key Takeaways
 text
 ✅ Collection = Table (SQL)
@@ -295,6 +297,8 @@ text
 ✅ upsert() → works for new OR existing IDs
 ✅ reset() → deletes all data (use carefully!)
 ✅ Use tiktoken to estimate embedding costs
+
+
 🎯 Summary in One Sentence
 ChromaDB is a vector database that stores embeddings, auto-embeds your data and queries, and lets you search, update, and delete using semantic meaning.
 
