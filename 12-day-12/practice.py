@@ -49,3 +49,17 @@ pc.create_index(
 # Check that each vector has a dimensionality of 1536
 vector_dims = [len(vector['values']) == 1536 for vector in vectors]
 print(all(vector_dims))
+
+############################################################################
+# Initialize the Pinecone client with your API key
+pc = Pinecone(api_key="pcsk_7CGK1Z_4dcXhH9GpXxK1zZE1rPBf6cWhsJR1cuJJXUJv4KZPkGwyLmjwqkK18RNSxMqb5L")
+
+index = pc.Index('datacamp-index')
+ids = ['2', '5', '8']
+
+# Fetch the vectors from the connected Pinecone index
+fetched_vectors = index.fetch(ids=ids)
+
+# Extract the metadata from each result in fetched_vectors
+metadatas = [fetched_vectors['vectors'][id]['metadata'] for id in ids]
+print(metadatas)
